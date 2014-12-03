@@ -1,0 +1,12 @@
+{
+  "name": "prototype-audio-2.1",
+  "private": "true",
+  "devDependencies": {
+    "ionic": "driftyco/ionic-bower#1.0.0-beta.13",
+    "angular-material": "*",
+    "polymer": "Polymer/core-icons#~0.5.1"
+  },
+  "dependencies": {
+    "animate.css": "~3"
+  }
+}

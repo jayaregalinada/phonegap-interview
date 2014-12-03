@@ -1,0 +1,19 @@
+.sending-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+        -ms-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+    .response {
+        .item {
+            font-size: floor($font-size-base * 3);
+        }
+    }
+}
+.sending {
+    text-align: center;
+    background-color: #FFF;
+    padding: 10px;
+
+}
