@@ -1,9 +1,10 @@
 ###
 app_controller_sending
 ###
-interview.controller 'SendingController', ( $scope, $state, $stateParams, $ionicLoading, $http )->
+interview.controller 'SendingController', ( $timeout, $rootScope, $scope, $state, $stateParams, $ionicLoading, $http )->
     
     $scope.sendingState = false
+    $scope.sender = 'http://i.ubl.ph/mail.php'
 
     mailConfig = 
         email: [
@@ -12,43 +13,37 @@ interview.controller 'SendingController', ( $scope, $state, $stateParams, $ionic
         subject: 'New Applicant :: Interview App'
         body: 'Hey another applicant'
 
+    $scope.startSession = ->
+        $rootScope.email = $scope.email.replace '@', '_'
+        return
+
     $scope.sendForm = ->
         $scope.sendingState = !$scope.sendingState
-
 
         $ionicLoading.show
             template: 'SENDING YOUR APPLICATION'
 
-        window.plugin.email.addAlias('gmail', 'com.google.android.gm');
-
-        window.plugin.email.open
-            app: 'gmail'
-            to: mailConfig.email
-            subject: mailConfig.subject
-            body: mailConfig.body
-            isHtml: true
-        , ->
-            $ionicLoading.hide()
+        $http.post( 
+            $scope.sender
+            records:
+                $rootScope.recordFile
+            email:
+                $scope.email
+        )
+        .success( (data, status, headers, config)->
             $ionicLoading.show
-                template: 'SENT'
-
-        # $scope.send()
-
-
-        return
-
-    $scope.send = ->
-        window.plugin.email.open
-            to: mailConfig.email
-            subject: mailConfig.subject
-            body: mailConfig.body
-            isHtml: true
-        , ->
-            $ionicLoading.hide()
-            $ionicLoading.show
-                template: 'SENT'
-
+                template: 'APPLICATION SENT'
+            $rootScope.recordFile = []
+            $timeout(->
+                $state.transitionTo 'initializing'
+            , 3000)
             return
+        )
+        .error( (data, status)->
+            console.log( data )
+            return
+        )
+
 
         return
 

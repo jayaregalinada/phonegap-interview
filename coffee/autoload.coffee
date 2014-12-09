@@ -11,23 +11,6 @@ _i =
 onDeviceReady = ->
   console.log "*** Device is READY ***"
   angular.bootstrap document, ["app"]
-
-  window.plugins.emailComposer.showEmailComposer(
-    'Interview app'
-    'Someone is attempting to email'
-    ['jayaregalinada@gmail.com']
-  )
-
-  if( ! window.plugin.email )
-    alert('sorry I can not run the email plugin')
-
-  window.plugin.email.isServiceAvailable( (isAvailable) ->
-    if( !isAvailable )
-      alert('Email service is unavailable')
-  )
-
-  if( Media or window.Media )
-    console.log "*** Media is [enabled] ***"
   
   return
 
@@ -37,13 +20,12 @@ interview = angular.module("app", [
   "ngMaterial"
 ]).run ( $ionicPlatform, $rootScope ) ->
   $rootScope.recordFile = []
+  $rootScope.email = null
   $ionicPlatform.ready ->
     cordova.plugins.Keyboard.hideKeyboardAccessoryBar true  if window.cordova and window.cordova.plugins.Keyboard
 
     StatusBar.styleDefault()  if window.StatusBar
 
-    console.log "*** Media is READY ***"  if window.Media
-    
     return
 
   return
