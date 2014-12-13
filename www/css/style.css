@@ -70,11 +70,4 @@
     }
 }
 
-/* Blinking class */
-.blink {
-    -webkit-animation: blink-it steps(1) 1s infinite;
-    -moz-animation: blink-it steps(1) 1s infinite;
-    -ms-animation: blink-it steps(1) 1s infinite;
-    -o-animation: blink-it steps(1) 1s infinite;
-    animation: blink-it steps(1) 1s infinite;
-}
+@import url('../lib/angular-typewrite/dist/angular-typewrite.css');

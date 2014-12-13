@@ -18,6 +18,8 @@ onDeviceReady = ->
 interview = angular.module("app", [ 
   "ionic"
   "ngMaterial"
+  "angularTypewrite"
+  "LocalStorageModule"
 ]).run ( $ionicPlatform, $rootScope ) ->
   $rootScope.recordFile = []
   $rootScope.email = null
@@ -36,24 +38,43 @@ routes
 interview.config ($stateProvider, $urlRouterProvider)->
 
   $stateProvider
-  .state('initializing'
+  .state('welcome'
     url: '/'
-    controller: 'StartingController'
+    controller: 'WelcomeController'
+    templateUrl: 'views/welcome.html'
   )
   .state('question'
     url: '/question/:id'
     controller: 'QuestionController'
-    templateUrl: 'templates/question.html'
+    templateUrl: 'views/question.html'
   )
-  .state( 'sending' 
+  .state('sending' 
     url: '/sending'
     controller: 'SendingController'
-    templateUrl: 'templates/sending.html'
+  )
+  .state('thankyou'
+    url: '/thankyou'
+    controller: 'ThankYouController'
+    templateUrl: 'views/thankyou.html'
+  )
+  .state('intro'
+    url: '/intro'
+    controller: 'IntroController'
+    templateUrl: 'views/intro.html'
   )
 
 
   $urlRouterProvider
   .otherwise('/')
+  return
+
+###
+angular-local-storage
+###
+interview.config (localStorageServiceProvider)->
+  localStorageServiceProvider
+  .setPrefix('i_')
+
   return
 
 document.addEventListener "deviceready", onDeviceReady, false

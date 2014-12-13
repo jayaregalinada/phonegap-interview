@@ -13,15 +13,11 @@ interview.controller 'SendingController', ( $timeout, $rootScope, $scope, $state
         subject: 'New Applicant :: Interview App'
         body: 'Hey another applicant'
 
-    $scope.startSession = ->
-        $rootScope.email = $scope.email.replace '@', '_'
-        return
-
     $scope.sendForm = ->
         $scope.sendingState = !$scope.sendingState
 
         $ionicLoading.show
-            template: 'SENDING YOUR APPLICATION'
+            template: 'PLEASE WAIT WE ARE SENDING YOUR APPLICATION'
 
         $http.post( 
             $scope.sender
@@ -35,17 +31,20 @@ interview.controller 'SendingController', ( $timeout, $rootScope, $scope, $state
                 template: 'APPLICATION SENT'
             $rootScope.recordFile = []
             $timeout(->
-                $state.transitionTo 'initializing'
+                $state.transitionTo 'thankyou'
             , 3000)
             return
         )
         .error( (data, status)->
             console.log( data )
+            alert('ERROR IN SENDING FORM')
             return
         )
 
 
         return
+
+    $scope.sendForm()
 
     return
 

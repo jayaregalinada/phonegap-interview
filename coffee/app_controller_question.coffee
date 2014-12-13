@@ -27,14 +27,13 @@ interview.controller "QuestionController", ( $rootScope, $state, $stateParams, $
     $scope.debugText = null
     $scope.extension = '.mp3'
 
-    
 
     $scope.createQuestion = ->
-        if( $stateParams.id > 4 )
-            $state.transitionTo( 'sending' )
+        $ionicLoading.hide()
+        if( $stateParams.id > Question.length() - 1 )
+            $state.transitionTo 'sending' 
         else
             q = Question.get $stateParams.id
-            console.log( q )
             $scope.question = 
                 title: q.name
                 id: parseInt($stateParams.id) + 1
@@ -56,7 +55,7 @@ interview.controller "QuestionController", ( $rootScope, $state, $stateParams, $
         # console.log "*** [status] micState: " + $scope.micState + " ***"
         # mediaRecFile = "i_" + $rootScope.email + "_" + Math.random().toString(36).substring(7) + ".mp3"
         time = new Date().getTime()
-        mediaRecFile = "i_" + $rootScope.email + "_" + time + $scope.extension
+        mediaRecFile = $rootScope.email + "_" + time + $scope.extension
         if mediaInstance
             # console.log "*** `mediaInstance` is still activated ***"
             mediaInstance.release()

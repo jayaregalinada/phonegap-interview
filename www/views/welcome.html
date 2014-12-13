@@ -1,0 +1,23 @@
+<div class="welcome" id="welcome">
+    <div class="welcome-container">
+        <h1 class="text-center">
+            <small>WELCOME TO THE</small><br />
+            Australian<br />
+            English<br />
+            Assessment
+        </h1>
+        <h2 class="text-center">
+            PLEASE INSERT YOUR EMAIL ADDRESS BELOW TO PROCEED
+        </h2>
+        <div class="list">
+            <form name="welcomeForm" ng-submit="welcomeForm.$valid && welcomeSubmit()">
+                <label for="email" class="item item-input item-floating-label">
+                    <span class="input-label">EMAIL</span>
+                    <input required="required" name="email" id="email" type="email" placeholder="Email Address" class="input-email" ng-model="email" />
+                </label>
+                <hr />
+                <button ng-disabled="!welcomeForm.$valid" type="submit" ng-class="{ 'button-balanced': welcomeForm.$valid, 'button-calm': !welcomeForm.$valid }" class="button icon-right ion-chevron-right">PROCEED</button>
+            </form>
+        </div>
+    </div>
+</div>

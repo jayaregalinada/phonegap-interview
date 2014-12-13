@@ -7,44 +7,97 @@ interview.factory 'Question', ->
 
     questions = [
         {
-            name: 'What is your name?'
+            name: 'Question #1?'
             response: [
-                'Nice name you got',
-                'Great name',
-                'Cool name',
-                'What a great name'
+                'Response to #1 A'
+                'Response to #1 B'
+                'Response to #1 C'
+                'Response to #1 D'
             ]
         }
         {
-            name: 'What is your age?'
+            name: 'Question #2?'
             response: [
-                'Looking young, huh?',
-                'Age doesn\'t really matter',
-                'Really?'
+                'Response to #2 A'
+                'Response to #2 B'
+                'Response to #2 C'
+                'Response to #2 D'
             ]
         }
         {
-            name: 'Do you have your 2 eyes?'
+            name: 'Question #3?'
             response: [
-                'You can see things very clearly',
-                'I hope it is properly working'
+                'Response to #3 A',
+                'Response to #3 B',
+                'Response to #3 C',
+                'Response to #3 D'
             ]
         }
         {
-            name: 'Do you have a facebook account?'
+            name: 'Question #4?'
             response: [
-                'I think I do not have any',
-                'I really need to create one',
-                'No way!'
+                'Response to #4 A',
+                'Response to #4 B',
+                'Response to #4 C',
+                'Response to #4 D'
             ]
         }
         {
-            name: 'Do you have skype?'
+            name: 'Question #5?'
             response: [
-                'Oh c\'mon'
+                'Response to #5 A',
+                'Response to #5 B',
+                'Response to #5 C',
+                'Response to #5 D'
+            ]
+        }
+        {
+            name: 'Question #6?'
+            response: [
+                'Response to #6 A',
+                'Response to #6 B',
+                'Response to #6 C',
+                'Response to #6 D'
+            ]
+        }
+        {
+            name: 'Question #7?'
+            response: [
+                'Response to #7 A',
+                'Response to #7 B',
+                'Response to #7 C',
+                'Response to #7 D'
+            ]
+        }
+        {
+            name: 'Question #8?'
+            response: [
+                'Response to #8 A',
+                'Response to #8 B',
+                'Response to #8 C',
+                'Response to #8 D'
+            ]
+        }
+        {
+            name: 'Question #9?'
+            response: [
+                'Response to #9 A',
+                'Response to #9 B',
+                'Response to #9 C',
+                'Response to #9 D'
+            ]
+        }
+        {
+            name: 'Question #10?'
+            response: [
+                'Response to #10 A',
+                'Response to #10 B',
+                'Response to #10 C',
+                'Response to #10 D'
             ]
         }
     ]
+
 
     getFileUploadOptions = (fileURI)->
         options = new FileUploadOptions()
@@ -67,12 +120,14 @@ interview.factory 'Question', ->
             questions
         get: ( questionId )->
             questions[ questionId ]
+        length: ()->
+            questions.length
         upload: ( file, onSuccess, onError )->
             options = new FileUploadOptions()
             ft = new FileTransfer()
             options.fileName = file.substr( file.lastIndexOf('/') + 1 )
             options.mimeType = 'audio/mp3'
-            options.fileKey  = 'photo'
+            options.fileKey  = 'record'
 
             ft.upload( file, encodeURI(uploader), onSuccess, onError, options)
 

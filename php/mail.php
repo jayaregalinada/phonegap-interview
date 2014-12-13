@@ -2,7 +2,7 @@
 
 $config = [
     'to' => 'jayaregalinada@gmail.com',
-    'subject' => 'Notification from Interview App',
+    'subject' => 'New Applicant - ',
     'url' => 'http://i.ubl.ph/uploads/',
 ];
 
@@ -16,7 +16,7 @@ foreach ($data['records'] as $key => $value) {
     $message .= "\r\n";
 }
 $message .= "==================\r\n";
-$mail = mail( $config['to'], $config['subject'], $message);
+$mail = mail( $config['to'], $config['subject'] . $data['email'], $message);
 
 echo $new;
 
