@@ -47,7 +47,7 @@ interview.controller 'SendingController', ( localStorageService, $timeout, $root
 #            alert 'ERROR IN SENDING FORM'
             $ionicLoading.show
                 template: 'Error in sending form. Sending again'
-                
+
             $scope.sendForm()
             return
         )
