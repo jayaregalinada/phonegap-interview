@@ -44,7 +44,10 @@ interview.controller 'SendingController', ( localStorageService, $timeout, $root
         )
         .error( (data, status)->
             console.log data
-            alert 'ERROR IN SENDING FORM'
+#            alert 'ERROR IN SENDING FORM'
+            $ionicLoading.show
+                template: 'Error in sending form. Sending again'
+                
             $scope.sendForm()
             return
         )
