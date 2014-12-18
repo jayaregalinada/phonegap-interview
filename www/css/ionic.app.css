@@ -7852,7 +7852,6 @@ body {
       margin: 0; }
   .question .paper-container {
     width: 168px;
-    border-radius: 100%;
     margin: 0 auto 10px auto; }
     .question .paper-container.ready .mic-icon {
       background-color: #66cc33 !important;
