@@ -83,3 +83,5 @@ gulp.task('git-check', function(done) {
 // DEFAULT TASKS
 gulp.task('default', ['sass', 'coffee']);
 
+gulp.task('development', ['default', 'watch']);
+

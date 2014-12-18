@@ -20,6 +20,7 @@ interview = angular.module("app", [
   "ngMaterial"
   "angularTypewrite"
   "LocalStorageModule"
+  "angularFileUpload"
 ]).run ( $ionicPlatform, $rootScope ) ->
   $rootScope.recordFile = []
   $rootScope.email = null
@@ -73,8 +74,10 @@ angular-local-storage
 ###
 interview.config (localStorageServiceProvider)->
   localStorageServiceProvider
-  .setPrefix('i_')
+  .setPrefix 'i_'
+  .setStorageType 'sessionStorage'
 
   return
 
 document.addEventListener "deviceready", onDeviceReady, false
+document.addEventListener "DOMContentLoaded", onDeviceReady, false

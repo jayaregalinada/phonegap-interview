@@ -2,7 +2,7 @@
 app_controller_welcome
 ###
 
-interview.controller 'WelcomeController', ( $rootScope, $state, $scope, $ionicLoading, $timeout )->
+interview.controller 'WelcomeController', ( localStorageService, $rootScope, $state, $scope, $ionicLoading, $timeout )->
 
     $scope.show = ->
         $ionicLoading.show
@@ -12,6 +12,7 @@ interview.controller 'WelcomeController', ( $rootScope, $state, $scope, $ionicLo
             $ionicLoading.hide()
         , 3000)
 
+        localStorageService.clearAll()
         return
 
     $scope.hide = ->
@@ -21,7 +22,12 @@ interview.controller 'WelcomeController', ( $rootScope, $state, $scope, $ionicLo
     $scope.welcomeSubmit = ->
         $ionicLoading.show
             template: 'LOADING'
-        $rootScope.email = $scope.email.replace '@', '_'
+
+        localStorageService.set 'applicant_email', $scope.email
+        localStorageService.set 'email', $scope.email.replace '@', '_'
+
+        $rootScope.email = localStorageService.get 'email'
+        $rootScope.applicantEmail = localStorageService.get 'applicant_email'
 
         $timeout(->
             $state.transitionTo 'intro',

@@ -1,7 +1,7 @@
 ###
 app_controller_question
 ###
-interview.controller "QuestionController", ( $rootScope, $state, $stateParams, $scope, $timeout, $interval, $window, Question, $ionicLoading ) ->
+interview.controller "QuestionController", ( $http, $rootScope, $state, $stateParams, $scope, $timeout, $interval, $window, Question, $ionicLoading, localStorageService ) ->
 
     mediaRecFile = null
     mediaInstance = null
@@ -26,6 +26,11 @@ interview.controller "QuestionController", ( $rootScope, $state, $stateParams, $
     $scope.state = $state
     $scope.debugText = null
     $scope.extension = '.mp3'
+    $scope.constraints = 
+        audio: true
+        video: false
+    $scope.userMedia = null
+
 
 
     $scope.createQuestion = ->
@@ -50,23 +55,42 @@ interview.controller "QuestionController", ( $rootScope, $state, $stateParams, $
         # console.log('*** SUCCESSFULLY createMedia ***')
         # console.log( fileName )
 
+    $scope.createMediaForBrowser = (fileName) ->
+
+        navigator.getUserMedia( $scope.constraints, (stream) ->
+            $scope.userMedia = stream
+            mediaInstance = RecordRTC( stream,
+                type: 'audio'
+                autoWriteToDisk: true
+            )
+            mediaInstance.startRecording()
+            $scope.startRecording( fileName )
+
+        , (err)->
+            console.log err
+        )
+
     $scope.nowRecording = ->
         # console.log "*** [trigger] nowRecording() ***"
         # console.log "*** [status] micState: " + $scope.micState + " ***"
-        # mediaRecFile = "i_" + $rootScope.email + "_" + Math.random().toString(36).substring(7) + ".mp3"
+        # mediaRecFile = "i_" + $rootScope.email + "_"+ Math.random().toString(36).substring(7) + ".mp3"
         time = new Date().getTime()
         mediaRecFile = $rootScope.email + "_" + time + $scope.extension
         if mediaInstance
             # console.log "*** `mediaInstance` is still activated ***"
-            mediaInstance.release()
+            if( phoneCheck.android )
+                mediaInstance.release()
             # console.log "*** `mediaInstance` is now release() ***"
         
 
 
         # mediaInstance = new Media( mediaRecFile, $scope.recordingSuccess, $scope.recordingError );
         unless $scope.micState
-            $scope.createMedia mediaRecFile
-            $scope.startRecording mediaRecFile
+            if( phoneCheck.android )
+                $scope.createMedia mediaRecFile
+                $scope.startRecording mediaRecFile
+            else
+                $scope.createMediaForBrowser mediaRecFile
         else
             $scope.endRecording mediaInstance
             return
@@ -74,9 +98,11 @@ interview.controller "QuestionController", ( $rootScope, $state, $stateParams, $
     $scope.startRecording = (fileName) ->
         # console.log fileName
         $ionicLoading.hide()
-        mediaInstance.release()  if mediaInstance
         # console.log "*** [trigger] startRecording() ***"
-        mediaInstance.startRecord()
+        if( phoneCheck.android )
+
+            mediaInstance.startRecord()
+
         $scope.micIcon = mic.off
         $scope.micState = not $scope.micState
         $scope.micStateText = "SPEAK NOW"
@@ -89,12 +115,16 @@ interview.controller "QuestionController", ( $rootScope, $state, $stateParams, $
 
     $scope.uploadQuestion = ->
         Question.upload(
-            mediaInstance.src
+            file: mediaInstance.src
+            name: mediaRecFile
             (success)->
-                res = JSON.parse success.response 
-                $rootScope.recordFile.push res.success.data.new 
-                $ionicLoading.show
-                    template: 'Successfully uploaded'
+                if phoneCheck.android
+                    res = JSON.parse success.response
+                        template: 'Successfully uploaded'
+
+                console.log success
+                $rootScope.recordFile.push success.success.new
+                localStorageService.set 'record', JSON.stringify $rootScope.recordFile
                 $scope.nextQuestion()
 
             (error)->
@@ -103,25 +133,43 @@ interview.controller "QuestionController", ( $rootScope, $state, $stateParams, $
                     template: 'LOADING'
                 $scope.uploadQuestion()
         )
+        
         return
 
     $scope.endRecording = ( instance ) ->
         # console.log "*** [trigger] endRecording() ***"
         if mediaInstance
-            console.log instance
-            mediaInstance.stopRecord()
-            $scope.debugText = JSON.stringify( mediaInstance.src )
+            if( phoneCheck.android )
+                mediaInstance.stopRecord()
+            else
+
+                mediaInstance.stopRecording((callback)->
+                    # console.log( callback )
+#                    mediaInstance.src = callback
+                    console.log('*** stopRecording() ***')
+                    mediaInstance.src = mediaInstance.getBlob()
+                    $scope.userMedia.stop()
+#                    mediaInstance.save()
+#                    mediaInstance.writeToDisk()
+#                    mediaInstance.stop()
+
+
+                    # console.log mediaInstance.writeToDisk()
+
+                    # console.log( mediaInstance.getBlob() )
+                    
+                    return
+                    # console.log( callback.toURL() )
+                    
+                    # mediaInstance.getDataURL((dataURL)->
+                    #     console.log( dataURL )
+                    # )
+                )
+
+
+
+            # $scope.debugText = JSON.stringify( mediaInstance.src )
             $scope.uploadQuestion()
-            # uploadingQuestion = Question.upload( 
-            #     mediaInstance.src
-            #     (success)->
-            #         res = JSON.parse success.response 
-            #         $rootScope.recordFile.push res.success.data.new 
-            #         console.log $rootScope.recordFile
-            #     (error)->
-            #         console.log '*** ERROR ***'
-            #         alert('error in uploading trying to upload again')
-            # )
 
         if angular.isDefined(curPosition)
             $interval.cancel curPosition
@@ -147,7 +195,7 @@ interview.controller "QuestionController", ( $rootScope, $state, $stateParams, $
             $state.transitionTo( 'question', { id: nextNumber } )
             return
         , 3000)
-
+ 
         return
 
     $scope.recordingSuccess = (record) ->
@@ -170,19 +218,7 @@ interview.controller "QuestionController", ( $rootScope, $state, $stateParams, $
         , 999)
         return
 
-    $scope.micRecording = ->
-        # console.log "*** [trigger] micRecording() ***"
-        mediaRecFile = "interview_record_" + Math.random().toString(36).substring(7) + ".mp3"
-        mediaInstance = new Media(mediaRecFile, $scope.recordingSuccess, $scope.recordingError)
-        mediaInstance.startRecord()
-        return
 
-    $scope.micDone = ->
-        # console.log "*** [trigger] micDone() ***"
-        mediaInstance.stopRecord()
-        mediaInstance.play()
-        console.log mediaInstance
-        return
 
     $scope.createQuestion()
 

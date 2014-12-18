@@ -13,7 +13,7 @@
             <form name="welcomeForm" ng-submit="welcomeForm.$valid && welcomeSubmit()">
                 <label for="email" class="item item-input item-floating-label">
                     <span class="input-label">EMAIL</span>
-                    <input required="required" name="email" id="email" type="email" placeholder="Email Address" class="input-email" ng-model="email" />
+                    <input aria-label="Email Address" aria-required="true" required="required" name="email" id="email" type="email" placeholder="Email Address" class="input-email" ng-model="email" />
                 </label>
                 <hr />
                 <button ng-disabled="!welcomeForm.$valid" type="submit" ng-class="{ 'button-balanced': welcomeForm.$valid, 'button-calm': !welcomeForm.$valid }" class="button icon-right ion-chevron-right">PROCEED</button>

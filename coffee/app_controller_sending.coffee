@@ -1,10 +1,10 @@
 ###
 app_controller_sending
 ###
-interview.controller 'SendingController', ( $timeout, $rootScope, $scope, $state, $stateParams, $ionicLoading, $http )->
+interview.controller 'SendingController', ( localStorageService, $timeout, $rootScope, $scope, $state, $stateParams, $ionicLoading, $http )->
     
     $scope.sendingState = false
-    $scope.sender = 'http://i.ubl.ph/mail.php'
+    $scope.sender = 'mail' #'http://i.ubl.ph/mail.php'
 
     mailConfig = 
         email: [
@@ -13,18 +13,24 @@ interview.controller 'SendingController', ( $timeout, $rootScope, $scope, $state
         subject: 'New Applicant :: Interview App'
         body: 'Hey another applicant'
 
+    $scope.data = {}
+
     $scope.sendForm = ->
         $scope.sendingState = !$scope.sendingState
 
         $ionicLoading.show
             template: 'PLEASE WAIT WE ARE SENDING YOUR APPLICATION'
 
+        $scope.data =
+            email:
+                localStorageService.get 'applicant_email'
+            records:
+                localStorageService.get 'record'
+
+
         $http.post( 
             $scope.sender
-            records:
-                $rootScope.recordFile
-            email:
-                $scope.email
+            data: $scope.data
         )
         .success( (data, status, headers, config)->
             $ionicLoading.show
@@ -33,11 +39,13 @@ interview.controller 'SendingController', ( $timeout, $rootScope, $scope, $state
             $timeout(->
                 $state.transitionTo 'thankyou'
             , 3000)
+            console.log data
             return
         )
         .error( (data, status)->
-            console.log( data )
-            alert('ERROR IN SENDING FORM')
+            console.log data
+            alert 'ERROR IN SENDING FORM'
+            $scope.sendForm()
             return
         )
 
