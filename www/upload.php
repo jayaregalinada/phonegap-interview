@@ -1,4 +1,5 @@
 <?php
+header('Access-Control-Allow-Origin: *');
 //if they DID upload a file...
 if( isset($_FILES['record']['name']) )
 {
